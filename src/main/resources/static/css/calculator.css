@@ -1,0 +1,144 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(45deg, #2c3e50, #3498db);
+}
+
+.calculator-title {
+    color: white;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.calculator-container {
+    padding: 20px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 15px 25px rgba(0,0,0,0.2);
+}
+
+.calculator {
+    width: 320px;
+}
+
+.display {
+    margin-bottom: 20px;
+}
+
+#display {
+    width: 100%;
+    height: 60px;
+    border: none;
+    background: rgba(255, 255, 255, 0.9);
+    font-size: 1.8em;
+    text-align: right;
+    padding: 0 20px;
+    border-radius: 10px;
+    color: #2c3e50;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+#display.result {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+#display.input {
+    font-weight: normal;
+    color: #666;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+button {
+    padding: 15px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+.number {
+    background: rgba(255, 255, 255, 0.9);
+    color: #2c3e50;
+}
+
+.number:hover {
+    background: rgba(255, 255, 255, 1);
+}
+
+.operator {
+    background: rgba(52, 152, 219, 0.9);
+    color: white;
+}
+
+.operator:hover {
+    background: rgba(52, 152, 219, 1);
+}
+
+.trig {
+    background: rgba(155, 89, 182, 0.9);
+    color: white;
+}
+
+.trig:hover {
+    background: rgba(155, 89, 182, 1);
+}
+
+button[data-value="="] {
+    background: rgba(46, 204, 113, 0.9);
+    color: white;
+}
+
+button[data-value="="]:hover {
+    background: rgba(46, 204, 113, 1);
+}
+
+button[data-value="C"] {
+    background: rgba(231, 76, 60, 0.9);
+    color: white;
+}
+
+button[data-value="C"]:hover {
+    background: rgba(231, 76, 60, 1);
+}
+
+.zero {
+    grid-column: span 2;
+}
+
+@media (max-width: 400px) {
+    .calculator {
+        width: 280px;
+    }
+    
+    button {
+        padding: 12px;
+    }
+    
+    .calculator-title {
+        font-size: 1.5em;
+    }
+} 
