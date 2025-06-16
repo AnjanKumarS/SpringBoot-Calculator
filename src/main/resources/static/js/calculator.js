@@ -85,29 +85,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleTrig(func) {
-        try {
-            const angle = parseFloat(currentExpression) || 0;
-            const radians = (angle * Math.PI) / 180; // Convert to radians
-            let result;
-            
-            switch(func) {
-                case 'sin':
-                    result = Math.sin(radians);
-                    break;
-                case 'cos':
-                    result = Math.cos(radians);
-                    break;
-                case 'tan':
-                    result = Math.tan(radians);
-                    break;
-            }
-            
-            currentExpression = result.toFixed(8).replace(/\.?0+$/, '');
-            isShowingResult = true;
-        } catch (error) {
-            currentExpression = 'Error';
-            isShowingResult = true;
+        if (isShowingResult) {
+            currentExpression = '';
+            isShowingResult = false;
         }
+        currentExpression = func + '(';
+        updateDisplay();
     }
 
     function appendToExpression(value) {
@@ -130,13 +113,56 @@ document.addEventListener('DOMContentLoaded', () => {
     function calculate() {
         try {
             // Replace × and ÷ with * and / for evaluation
-            const evalExpression = currentExpression.replace(/×/g, '*').replace(/÷/g, '/');
-            currentExpression = eval(evalExpression).toString();
+            let evalExpression = currentExpression.replace(/×/g, '*').replace(/÷/g, '/');
+            
+            // Evaluate the expression following BODMAS rules
+            const result = evaluateExpression(evalExpression);
+            currentExpression = result.toFixed(8).replace(/\.?0+$/, ''); // Format result to 8 decimal places and remove trailing zeros
             isShowingResult = true;
         } catch (error) {
             currentExpression = 'Error';
             isShowingResult = true;
         }
+        updateDisplay();
+    }
+
+    function evaluateExpression(expression) {
+        // Remove all spaces
+        expression = expression.replace(/\s+/g, '');
+        
+        // Handle brackets first (B in BODMAS)
+        while (expression.includes('(')) {
+            expression = expression.replace(/\(([^()]+)\)/g, function(match, group) {
+                return evaluateExpression(group);
+            });
+        }
+
+        // Handle trigonometric functions
+        expression = expression.replace(/(sin|cos|tan)\(([^)]+)\)/g, function(match, func, angle) {
+            const value = parseFloat(evaluateExpression(angle));
+            const radians = value * Math.PI / 180; // Convert to radians
+            switch(func) {
+                case 'sin': return Math.sin(radians);
+                case 'cos': return Math.cos(radians);
+                case 'tan': return Math.tan(radians);
+            }
+        });
+
+        // Handle multiplication and division (DM in BODMAS)
+        while (expression.match(/[\d.]+[\*/][\d.]+/)) {
+            expression = expression.replace(/([\d.]+)([\*/])([\d.]+)/, function(match, num1, op, num2) {
+                return op === '*' ? num1 * num2 : num1 / num2;
+            });
+        }
+
+        // Handle addition and subtraction (AS in BODMAS)
+        while (expression.match(/[\d.]+[\+\-][\d.]+/)) {
+            expression = expression.replace(/([\d.]+)([\+\-])([\d.]+)/, function(match, num1, op, num2) {
+                return op === '+' ? parseFloat(num1) + parseFloat(num2) : parseFloat(num1) - parseFloat(num2);
+            });
+        }
+
+        return parseFloat(expression);
     }
 
     function clear() {
